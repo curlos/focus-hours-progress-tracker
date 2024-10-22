@@ -1,5 +1,10 @@
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
-import { areDatesEqual, getCurrentDay, getFocusDurationFilteredByProjects, getFormattedDuration } from '../utils/helpers.utils';
+import {
+	areDatesEqual,
+	getCurrentDay,
+	getFocusDurationFilteredByProjects,
+	getFormattedDuration,
+} from '../utils/helpers.utils';
 import Icon from './Icon';
 
 const CRUCIAL_PROJECTS = {
@@ -10,19 +15,19 @@ const CRUCIAL_PROJECTS = {
 
 const getGoalSeconds = () => {
 	const goalForDays = {
-		"Sunday": 16200,
-		"Monday": 3600,
-		"Tuesday": 3600,
-		"Wednesday": 3600,
-		"Thursday": 3600,
-		"Friday": 3600,
-		"Saturday": 16200
+		Sunday: 16200,
+		Monday: 3600,
+		Tuesday: 3600,
+		Wednesday: 3600,
+		Thursday: 3600,
+		Friday: 3600,
+		Saturday: 16200,
 	};
-	
-	const currentDay = getCurrentDay()
-	const goalSecondsForToday = goalForDays[currentDay]
-	return goalSecondsForToday
-}
+
+	const currentDay = getCurrentDay();
+	const goalSecondsForToday = goalForDays[currentDay];
+	return goalSecondsForToday;
+};
 
 const DailyHoursFocusGoal = ({ focusRecords }) => {
 	// 18,000 seconds = 5 Hours, the daily goal for number of focus hours per day.
@@ -70,7 +75,7 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 
 	const totalFocusDurationToday = getTotalFocusDurationToday();
 	const percentageOfFocusedGoalHours = getPercentageOfFocusedGoalHours();
-	const completedGoalForTheDay = percentageOfFocusedGoalHours >= 100
+	const completedGoalForTheDay = percentageOfFocusedGoalHours >= 100;
 
 	return (
 		<div>
@@ -87,7 +92,7 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 					trailColor: '#3d3c3c',
 				})}
 				counterClockwise={true}
-				className={completedGoalForTheDay ? "animated-progress-path" : ""}
+				className={completedGoalForTheDay ? 'animated-progress-path' : ''}
 			>
 				<div
 					className="text-white text-[40px] flex justify-center gap-4 w-[100%] select-none cursor-pointer mb-[-10px]"
@@ -95,7 +100,8 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 				>
 					<div data-cy="timer-display" className="text-center text-[40px]">
 						<div className="mt-3">
-							{getFormattedDuration(totalFocusDurationToday, false)}<span className="">/</span>
+							{getFormattedDuration(totalFocusDurationToday, false)}
+							<span className="">/</span>
 							{getFormattedDuration(GOAL_SECONDS, false)}
 						</div>
 
