@@ -1,11 +1,15 @@
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import {
 	areDatesEqual,
-	getCurrentDay,
+	getDateMapSinceDay,
+	getDayString,
 	getFocusDurationFilteredByProjects,
 	getFormattedDuration,
+	getFormattedLongDay,
+	sortObjectByDateKeys,
 } from '../utils/helpers.utils';
 import Icon from './Icon';
+import { useEffect, useState } from 'react';
 
 const CRUCIAL_PROJECTS = {
 	LeetCode: true,
@@ -13,26 +17,114 @@ const CRUCIAL_PROJECTS = {
 	'Behavioral Interview Prep': true,
 };
 
-const getGoalSeconds = () => {
-	const goalForDays = {
-		Sunday: 16200,
-		Monday: 3600,
-		Tuesday: 3600,
-		Wednesday: 3600,
-		Thursday: 3600,
-		Friday: 3600,
-		Saturday: 16200,
-	};
+const GOAL_FOR_DAYS = {
+	Sunday: 16200,
+	Monday: 3600,
+	Tuesday: 3600,
+	Wednesday: 3600,
+	Thursday: 3600,
+	Friday: 3600,
+	Saturday: 16200,
+};
 
-	const currentDay = getCurrentDay();
-	const goalSecondsForToday = goalForDays[currentDay];
+const getGoalSeconds = (date) => {
+	const currentDayString = getDayString(date);
+	const goalSecondsForToday = GOAL_FOR_DAYS[currentDayString];
 	return goalSecondsForToday;
 };
 
+const getDurationForFocusRecordsFilteredByProjects = (focusRecords) => {
+	let totalFocusDuration = 0;
+
+	focusRecords.forEach((focusRecord) => {
+		totalFocusDuration += getFocusDurationFilteredByProjects(focusRecord, CRUCIAL_PROJECTS);
+	});
+
+	return totalFocusDuration;
+};
+
 const DailyHoursFocusGoal = ({ focusRecords }) => {
+	const [streaksInfo, setStreaksInfo] = useState({
+		currentStreak: 0,
+		longestStreak: 0,
+		allStreaks: {},
+	});
+
+	useEffect(() => {
+		if (focusRecords) {
+			const streakObj = {
+				currentStreak: 0,
+			};
+
+			const focusRecordsByDate = {};
+
+			focusRecords.forEach((focusRecord) => {
+				const { startTime } = focusRecord;
+
+				const dayKey = getFormattedLongDay(new Date(startTime));
+
+				if (!focusRecordsByDate[dayKey]) {
+					focusRecordsByDate[dayKey] = [];
+				}
+
+				focusRecordsByDate[dayKey].push(focusRecord);
+			});
+
+			const totalFocusDurationByDate = getDateMapSinceDay('November 1, 2020');
+
+			Object.keys(focusRecordsByDate).map((dayKey) => {
+				const focusRecordsForDay = focusRecordsByDate[dayKey];
+				const durationForDay = getDurationForFocusRecordsFilteredByProjects(focusRecordsForDay);
+				totalFocusDurationByDate[dayKey] = durationForDay;
+			});
+
+			const sortedFocusDurationByDate = sortObjectByDateKeys(totalFocusDurationByDate);
+
+			const newStreaksInfo = {
+				currentStreak: {
+					days: 0,
+					from: null,
+					to: null,
+				},
+				longestStreak: {
+					days: 0,
+					from: null,
+					to: null,
+				},
+				allStreaks: [],
+			};
+
+			// TODO: This will not currently count days that have no focus records like October 20, 2024. So, those will not break a streak as of now. Will need to fix later to include those too.
+			Object.keys(sortedFocusDurationByDate).forEach((dateKey) => {
+				const focusDurationForDay = sortedFocusDurationByDate[dateKey];
+				const goalSecondsForDay = getGoalSeconds(new Date(dateKey));
+
+				const { currentStreak, longestStreak, allStreaks } = newStreaksInfo;
+
+				if (focusDurationForDay >= goalSecondsForDay) {
+					currentStreak.days += 1;
+				} else {
+					if (currentStreak.days > 0) {
+						console.log(currentStreak);
+						allStreaks.push(currentStreak);
+
+						// Reset current streak
+						currentStreak.days = 0;
+						currentStreak.from = null;
+						currentStreak.to = null;
+					}
+				}
+
+				console.log(newStreaksInfo);
+			});
+
+			console.log(newStreaksInfo);
+		}
+	}, [focusRecords]);
+
 	// 18,000 seconds = 5 Hours, the daily goal for number of focus hours per day.
 	// TODO: GOAL number of seconds should editable in the "/user-settings" endpoint and that should come from there.
-	const GOAL_SECONDS = getGoalSeconds();
+	const GOAL_SECONDS = getGoalSeconds(new Date());
 
 	if (!focusRecords) {
 		return null;
@@ -57,15 +149,7 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 
 	const getTotalFocusDurationToday = () => {
 		const focusRecordsFromToday = getFocusRecordsFromToday();
-		console.log(focusRecordsFromToday);
-
-		let totalFocusDurationToday = 0;
-
-		focusRecordsFromToday.forEach((focusRecord) => {
-			totalFocusDurationToday += getFocusDurationFilteredByProjects(focusRecord, CRUCIAL_PROJECTS);
-		});
-
-		return totalFocusDurationToday;
+		return getDurationForFocusRecordsFilteredByProjects(focusRecordsFromToday);
 	};
 
 	const getPercentageOfFocusedGoalHours = () => {

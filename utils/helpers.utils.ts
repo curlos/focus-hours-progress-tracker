@@ -66,3 +66,46 @@ export const getCurrentDay = () => {
 	const dayOfWeek = daysOfWeek[today.getDay()];
 	return dayOfWeek;
 };
+
+export const getDayString = (date) => {
+	const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+	const dayOfWeek = daysOfWeek[date.getDay()];
+	return dayOfWeek;
+};
+
+export const getFormattedLongDay = (inputDate) => {
+	return inputDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+};
+
+export const sortObjectByDateKeys = (data) => {
+    // Convert object keys (date strings) into an array, sort them based on date comparison
+    const sortedKeys = Object.keys(data).sort((a, b) => new Date(a) - new Date(b));
+
+    // Create a new object to store the sorted data
+    const sortedData = {};
+
+    // Populate the new object using the sorted keys
+    sortedKeys.forEach(key => {
+        sortedData[key] = data[key];
+    });
+
+    return sortedData;
+}
+
+export const getDateMapSinceDay = (startDateStr) => {
+    const startDate = new Date(startDateStr);
+    const currentDate = new Date();
+    const oneDay = 1000 * 60 * 60 * 24; // milliseconds in a day
+    const dateMap = {};
+
+    for (let date = startDate; date <= currentDate; date = new Date(date.getTime() + oneDay)) {
+        const dateString = date.toLocaleDateString('en-US', {
+            month: 'long',
+            day: 'numeric',
+            year: 'numeric'
+        });
+        dateMap[dateString] = 0;
+    }
+
+    return dateMap;
+}
