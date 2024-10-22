@@ -1,5 +1,5 @@
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
-import { areDatesEqual, getFocusDurationFilteredByProjects, getFormattedDuration } from '../utils/helpers.utils';
+import { areDatesEqual, getCurrentDay, getFocusDurationFilteredByProjects, getFormattedDuration } from '../utils/helpers.utils';
 
 const CRUCIAL_PROJECTS = {
 	LeetCode: true,
@@ -7,10 +7,26 @@ const CRUCIAL_PROJECTS = {
 	'Behavioral Interview Prep': true,
 };
 
+const getGoalSeconds = () => {
+	const goalForDays = {
+		"Sunday": 16200,
+		"Monday": 3600,
+		"Tuesday": 3600,
+		"Wednesday": 3600,
+		"Thursday": 3600,
+		"Friday": 3600,
+		"Saturday": 16200
+	};
+	
+	const currentDay = getCurrentDay()
+	const goalSecondsForToday = goalForDays["Saturday"]
+	return goalSecondsForToday
+}
+
 const DailyHoursFocusGoal = ({ focusRecords }) => {
 	// 18,000 seconds = 5 Hours, the daily goal for number of focus hours per day.
 	// TODO: GOAL number of seconds should editable in the "/user-settings" endpoint and that should come from there.
-	const GOAL_SECONDS = 18000;
+	const GOAL_SECONDS = getGoalSeconds();
 
 	if (!focusRecords) {
 		return null;
@@ -54,29 +70,34 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 	const totalFocusDurationToday = getTotalFocusDurationToday();
 	const percentageOfFocusedGoalHours = getPercentageOfFocusedGoalHours();
 
+	console.log(percentageOfFocusedGoalHours)
+
+	const completedGoalForTheDay = percentageOfFocusedGoalHours >= 100
+
 	return (
 		<div>
 			<CircularProgressbarWithChildren
 				value={getPercentageOfFocusedGoalHours()}
-				strokeWidth={1.5}
+				strokeWidth={3}
 				styles={buildStyles({
 					textColor: '#4772F9',
-					pathColor: '#4772F9', // Red when overtime, otherwise original color
+					pathColor: completedGoalForTheDay ? '#00cc66' : '#d92323', // Red when overtime, otherwise original color
 					trailColor: '#3d3c3c',
 				})}
 				counterClockwise={true}
+				className={completedGoalForTheDay ? "animated-progress-path" : ""}
 			>
 				<div
 					className="text-white text-[40px] flex justify-center gap-4 w-[100%] select-none cursor-pointer mb-[-10px]"
 					onMouseOver={() => {}}
 				>
-					<div data-cy="timer-display" className="text-center text-[35px]">
+					<div data-cy="timer-display" className="text-center text-[40px]">
 						<div className="mt-3">
-							{getFormattedDuration(totalFocusDurationToday, false)}/
+							{getFormattedDuration(totalFocusDurationToday, false)}<span className="">/</span>
 							{getFormattedDuration(GOAL_SECONDS, false)}
 						</div>
 
-						<div className="text-[20px] mt-[-5px] text-color-gray-100">
+						<div className="text-[22px] mt-[-5px] text-color-gray-100">
 							{Number(percentageOfFocusedGoalHours).toFixed(2)}%
 						</div>
 					</div>

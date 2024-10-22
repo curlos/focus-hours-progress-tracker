@@ -1,9 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+// @ts-ignore
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}"
-  ],
+  content: ["./{pages,layouts,components,src}/**/*.{html,js,jsx,ts,tsx,vue}"],
   safelist: [/^bg-/, /^text-/],
   theme: {
     extend: {
