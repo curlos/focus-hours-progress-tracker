@@ -1,5 +1,6 @@
 import { CircularProgressbarWithChildren, buildStyles } from 'react-circular-progressbar';
 import { areDatesEqual, getCurrentDay, getFocusDurationFilteredByProjects, getFormattedDuration } from '../utils/helpers.utils';
+import Icon from './Icon';
 
 const CRUCIAL_PROJECTS = {
 	LeetCode: true,
@@ -69,13 +70,14 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 
 	const totalFocusDurationToday = getTotalFocusDurationToday();
 	const percentageOfFocusedGoalHours = getPercentageOfFocusedGoalHours();
-
-	console.log(percentageOfFocusedGoalHours)
-
 	const completedGoalForTheDay = percentageOfFocusedGoalHours >= 100
 
 	return (
 		<div>
+			<div className="flex justify-end items-center text-orange-500">
+				<Icon name="local_fire_department" customClass={'!text-[30px]'} />
+				<span className="text-[20px] font-bold">12</span>
+			</div>
 			<CircularProgressbarWithChildren
 				value={getPercentageOfFocusedGoalHours()}
 				strokeWidth={3}
