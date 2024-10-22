@@ -1,13 +1,13 @@
 {
-    "rewrites": [
-      {
-        "source": "/((?!assets/).*)",
-        "destination": "/api/ssr.js"
-      }
-    ],
-    "git": {
-      "deploymentEnabled": {
-        "main": false
-      }
-    }
-  }
+	"rewrites": [
+		{
+			"source": "/((?!assets/).*)",
+			"destination": "/api/ssr.js"
+		}
+	],
+	"git": {
+		"deploymentEnabled": {
+			"main": false
+		}
+	}
+}

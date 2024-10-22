@@ -1,27 +1,27 @@
 {
-  "scripts": {
-    "dev": "vite --host",
-    "build": "vite build",
-    "preview": "vite preview",
-    "formatAllFilesPrettier": "npx prettier --write '**/*.{ts,tsx}'"
-  },
-  "dependencies": {
-    "@vitejs/plugin-react": "^4.3.3",
-    "material-symbols": "^0.25.1",
-    "react": "^18.3.1",
-    "react-circular-progressbar": "^2.1.0",
-    "react-dom": "^18.3.1",
-    "vike-react": "^0.5.7"
-  },
-  "devDependencies": {
-    "@types/react": "^18.3.11",
-    "@types/react-dom": "^18.3.1",
-    "autoprefixer": "^10.4.20",
-    "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14",
-    "typescript": "^5.6.3",
-    "vike": "^0.4.199",
-    "vite": "^5.4.9"
-  },
-  "type": "module"
+	"scripts": {
+		"dev": "vite --host",
+		"build": "vite build",
+		"preview": "vite preview",
+		"formatAllFilesPrettier": "npx prettier --write '**/*.{ts,tsx,json,css}'"
+	},
+	"dependencies": {
+		"@vitejs/plugin-react": "^4.3.3",
+		"material-symbols": "^0.25.1",
+		"react": "^18.3.1",
+		"react-circular-progressbar": "^2.1.0",
+		"react-dom": "^18.3.1",
+		"vike-react": "^0.5.7"
+	},
+	"devDependencies": {
+		"@types/react": "^18.3.11",
+		"@types/react-dom": "^18.3.1",
+		"autoprefixer": "^10.4.20",
+		"postcss": "^8.4.47",
+		"tailwindcss": "^3.4.14",
+		"typescript": "^5.6.3",
+		"vike": "^0.4.199",
+		"vite": "^5.4.9"
+	},
+	"type": "module"
 }
