@@ -19,7 +19,7 @@ const getGoalSeconds = () => {
 	};
 	
 	const currentDay = getCurrentDay()
-	const goalSecondsForToday = goalForDays["Saturday"]
+	const goalSecondsForToday = goalForDays[currentDay]
 	return goalSecondsForToday
 }
 
