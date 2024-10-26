@@ -98,15 +98,32 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 			Object.keys(sortedFocusDurationByDate).forEach((dateKey) => {
 				const focusDurationForDay = sortedFocusDurationByDate[dateKey];
 				const goalSecondsForDay = getGoalSeconds(new Date(dateKey));
+				const goalHasBeenMet = focusDurationForDay >= goalSecondsForDay;
 
 				const { currentStreak, longestStreak, allStreaks } = newStreaksInfo;
 
-				if (focusDurationForDay >= goalSecondsForDay) {
+				if (goalHasBeenMet) {
 					currentStreak.days += 1;
+
+					if (!currentStreak.from) {
+						currentStreak.from = dateKey;
+					}
+
+					currentStreak.to = dateKey;
+
+					if (currentStreak.days >= longestStreak.days) {
+						newStreaksInfo.longestStreak = { ...currentStreak };
+					}
 				} else {
-					if (currentStreak.days > 0) {
-						console.log(currentStreak);
-						allStreaks.push(currentStreak);
+					const newStreakHasStarted = currentStreak.days > 0;
+
+					// If the goal has not been met for the day, then the streak has been broken and must be reset. If there was a current streak (1 day or more), add that to the list of the "allStreaks" and reset "currentStreak".
+					if (newStreakHasStarted) {
+						allStreaks.push({ ...currentStreak });
+
+						if (currentStreak.days >= longestStreak.days) {
+							newStreaksInfo.longestStreak = { ...currentStreak };
+						}
 
 						// Reset current streak
 						currentStreak.days = 0;
@@ -114,8 +131,6 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 						currentStreak.to = null;
 					}
 				}
-
-				console.log(newStreaksInfo);
 			});
 
 			console.log(newStreaksInfo);
