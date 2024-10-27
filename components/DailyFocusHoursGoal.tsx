@@ -18,13 +18,13 @@ const CRUCIAL_PROJECTS = {
 };
 
 const GOAL_FOR_DAYS = {
-	Sunday: 16200,
+	Sunday: 5400,
 	Monday: 3600,
 	Tuesday: 3600,
 	Wednesday: 3600,
 	Thursday: 3600,
 	Friday: 3600,
-	Saturday: 16200,
+	Saturday: 5400,
 };
 
 const getGoalSeconds = (date) => {
@@ -133,7 +133,7 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 				}
 			});
 
-			console.log(newStreaksInfo);
+			setStreaksInfo(newStreaksInfo);
 		}
 	}, [focusRecords]);
 
@@ -179,29 +179,34 @@ const DailyHoursFocusGoal = ({ focusRecords }) => {
 	return (
 		<div>
 			<div className="flex justify-end items-center text-orange-500">
-				<Icon name="local_fire_department" customClass={'!text-[30px]'} />
-				<span className="text-[20px] font-bold">12</span>
+				<Icon name="local_fire_department" customClass={'!text-[32px]'} />
+				<span className="text-[20px]">
+					<span className="text-[32px] font-bold">{streaksInfo.longestStreak.days}</span>
+					/90
+				</span>
 			</div>
 			<CircularProgressbarWithChildren
 				value={getPercentageOfFocusedGoalHours()}
 				strokeWidth={3}
 				styles={buildStyles({
 					textColor: '#4772F9',
-					pathColor: completedGoalForTheDay ? '#00cc66' : '#d92323', // Red when overtime, otherwise original color
+					pathColor: completedGoalForTheDay ? '#00cc66' : '#34d399', // Red when overtime, otherwise original color
 					trailColor: '#3d3c3c',
 				})}
-				counterClockwise={true}
+				counterClockwise={false}
 				className={completedGoalForTheDay ? 'animated-progress-path' : ''}
 			>
 				<div
 					className="text-white text-[40px] flex justify-center gap-4 w-[100%] select-none cursor-pointer mb-[-10px]"
 					onMouseOver={() => {}}
 				>
-					<div data-cy="timer-display" className="text-center text-[40px]">
+					<div data-cy="timer-display" className="text-center text-[32px]">
 						<div className="mt-3">
-							{getFormattedDuration(totalFocusDurationToday, false)}
+							<span className="text-[48px] font-[600]">
+								{getFormattedDuration(totalFocusDurationToday, false)}
+							</span>
 							<span className="">/</span>
-							{getFormattedDuration(GOAL_SECONDS, false)}
+							<span>{getFormattedDuration(GOAL_SECONDS, false)}</span>
 						</div>
 
 						<div className="text-[22px] mt-[-5px] text-color-gray-100">
